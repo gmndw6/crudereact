@@ -15,7 +15,8 @@ const FormContainer = styled('div')({
 
 const Edit   = () => {
   const [firstName, setFirstName] = useState('');
-  const [age, setAge] = useState('');
+  const [email, setEmail] = useState('');
+  const [contactNumber, setContactNumber] = useState('');
   const [id, setId] = useState('');
   let history = useNavigate();
 
@@ -23,10 +24,11 @@ const Edit   = () => {
   var index = Employees.map(q => q.id).indexOf(id)
   const handleEdit = (event) => {
       event.preventDefault();
-      
-    var a = Employees[index];
-    a.name= firstName;
-    a.age = age;
+        
+      var a = Employees[index];
+      a.name= firstName;
+      a.email = email;
+      a.contactNumber = contactNumber
 
     // Employees.push({name : a, age: b})
     console.log(Employees);
@@ -34,12 +36,13 @@ const Edit   = () => {
     history("/")
     // Reset form fields
     setFirstName('');
-    setAge('');
+    setEmail('');
+    setContactNumber('');
   };
   useEffect(() => {
         setFirstName(localStorage.getItem('name'))
-        setAge(localStorage.getItem('age'))
-        setId(localStorage.getItem('id'))
+        setEmail(localStorage.getItem('email'))
+        setContactNumber(localStorage.getItem('contactNumber'))
   }, [])
 
   return (
@@ -55,9 +58,15 @@ const Edit   = () => {
         </div>
         <div style={{marginTop: '2rem'}}>
         <TextField
-          label="Age"
-          value={age}
-          onChange={(event) => setAge(event.target.value)}
+          label="Email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          required
+        />
+        <TextField
+          label="Contact Number"
+          value={contactNumber}
+          onChange={(event) => setEmail(event.target.value)}
           required
         />
         </div>

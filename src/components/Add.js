@@ -15,24 +15,26 @@ const FormContainer = styled('div')({
 
 const Add = () => {
   const [firstName, setFirstName] = useState('');
-  const [age, setAge] = useState('');
+  const [email, setEmail] = useState('');
+  const [contactNumber, setContactNumber] = useState('');
+
   let history = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    // const ids = uuid();
-    // let uniqueId = ids.slice(0,8)
     var uniqueId = Employees.length + 1
     var a = firstName;
-    var b= age;
+    var b= email;
+    var c = contactNumber
 
-    Employees.push({id: uniqueId.toString(), name : a, age: b})
+    Employees.push({id: uniqueId.toString(), name : a, email: b, contactNumber: c})
     console.log(Employees);
 
     history("/")
     // Reset form fields
     setFirstName('');
-    setAge('');
+    setEmail('');
+    setContactNumber('');
   };
 
   return (
@@ -48,9 +50,17 @@ const Add = () => {
         </div>
         <div style={{marginTop: '2rem'}}>
         <TextField
-          label="Age"
-          value={age}
-          onChange={(event) => setAge(event.target.value)}
+          label="Email"
+          type='email'
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          required
+        />
+        <TextField
+          label="Contact Number"
+          type='number'
+          value={contactNumber}
+          onChange={(event) => setContactNumber(event.target.value)}
           required
         />
         </div>

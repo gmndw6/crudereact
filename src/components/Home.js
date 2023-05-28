@@ -39,10 +39,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
       const [employee, setEmployee] = useState(Employees)
       const history = useNavigate();
 
-      const handleEdit = (id , name, age) => {
+      const handleEdit = (id , name, email) => {
         localStorage.setItem('id', id)
         localStorage.setItem('name', name)
-        localStorage.setItem('age', age)
+        localStorage.setItem('email', email)
       }
 
       const handleDelete = (id) => {
@@ -56,12 +56,19 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
   return (
     <div>
+       <div style={{ marginBottom: '2rem'}}>
+            <Link to={'/add'}>
+            <Button name={'Add Contact'}/>
+            </Link>
+        </div>
             <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
                 <TableRow>
+                <StyledTableCell>ID</StyledTableCell>
                 <StyledTableCell>Name</StyledTableCell>
-                <StyledTableCell>Age</StyledTableCell>
+                <StyledTableCell>Email</StyledTableCell>
+                <StyledTableCell>Contact Number</StyledTableCell>
                 <StyledTableCell>Actions</StyledTableCell>
                 </TableRow>
             </TableHead>
@@ -74,8 +81,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
                     key={item.name}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
+                  <StyledTableCell>{item.id}</StyledTableCell>
                     <StyledTableCell>{item.name}</StyledTableCell>
-                    <StyledTableCell>{item.age}</StyledTableCell>
+                    <StyledTableCell>{item.email}</StyledTableCell>
+                    <StyledTableCell>{item.contactNumber}</StyledTableCell>
                     <StyledTableCell>
                         <RemoveRedEyeIcon onClick={() => alert('View')} style={{ color: '#288BA8' }}/>
                         <Link to={'/edit'}>
@@ -96,11 +105,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
             </TableBody>
             </Table>
         </TableContainer>
-        <div style={{display: 'flex', justifyContent: 'center', marginTop: '2rem'}}>
-            <Link to={'/add'}>
-            <Button name={'Create'}/>
-            </Link>
-        </div>
+       
         </div>
     )
 }
