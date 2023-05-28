@@ -56,6 +56,8 @@ const Add = () => {
           onChange={(event) => setEmail(event.target.value)}
           required
         />
+        </div>
+        <div style={{marginTop: '2rem'}}>
         <TextField
           label="Contact Number"
           type='number'
@@ -66,7 +68,7 @@ const Add = () => {
         </div>
         <div style={{display: 'flex', marginTop: '2rem'}}>
         <Button type="submit" variant="contained" color="primary">
-          Submit
+          Add
         </Button>
         </div>
       </form>

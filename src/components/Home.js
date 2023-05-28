@@ -39,10 +39,11 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
       const [employee, setEmployee] = useState(Employees)
       const history = useNavigate();
 
-      const handleEdit = (id , name, email) => {
+      const handleEdit = (id , name, email, contactNumber) => {
         localStorage.setItem('id', id)
         localStorage.setItem('name', name)
         localStorage.setItem('email', email)
+        localStorage.setItem('contactNumber', contactNumber)
       }
 
       const handleDelete = (id) => {
@@ -88,7 +89,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
                     <StyledTableCell>
                         <RemoveRedEyeIcon onClick={() => alert('View')} style={{ color: '#288BA8' }}/>
                         <Link to={'/edit'}>
-                        <ModeEditOutlineIcon onClick={() => handleEdit(item.id, item.name, item.age)}/>
+                        <ModeEditOutlineIcon onClick={() => handleEdit(item.id, item.name, item.email, item.contactNumber)}/>
                         </Link>
                         <DeleteIcon onClick={() => handleDelete(item.id)} style={{ color: '#E83845' }}/>
                     </StyledTableCell>
