@@ -12,8 +12,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/material/styles';
 import { Employees } from './Employees'
 import { useNavigate, Link } from 'react-router-dom';
-import Button from './Button';
-import Create from './Create';
+import Button from '@mui/material/Button';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { Box, TablePagination, Tooltip } from '@mui/material';
+import Fade from '@mui/material/Fade';
+import Swal from 'sweetalert2'
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -37,7 +43,18 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   
   function Home() {
       const [employee, setEmployee] = useState(Employees)
+      const [page, setPage] = useState(0);
+      const [rowsPerPage, setRowsPerPage] = useState(5);
       const history = useNavigate();
+      
+      const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+      };
+    
+      const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 5));
+        setPage(0);
+      };
 
       const handleEdit = (id , name, email, contactNumber) => {
         localStorage.setItem('id', id)
@@ -45,25 +62,70 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         localStorage.setItem('email', email)
         localStorage.setItem('contactNumber', contactNumber)
       }
-
+      const handleView = (id , name, email, contactNumber) => {
+        localStorage.setItem('id', id)
+        localStorage.setItem('name', name)
+        localStorage.setItem('email', email)
+        localStorage.setItem('contactNumber', contactNumber)
+      }
+      
       const handleDelete = (id) => {
           var isDelete =  employee.map(function(e){
             return e.id
           }).indexOf(id)
-
-          employee.splice(isDelete, 1);
-          history('/');
+         
+          const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+              confirmButton: 'primary',
+              cancelButton: 'secondary'
+            },
+            buttonsStyling: true
+          })
+          swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+          }).then((result) => {
+            if (result.isConfirmed) {
+              employee.splice(isDelete, 1);
+              history("/")    
+              swalWithBootstrapButtons.fire(
+                'Deleted!',
+                'Your data has been deleted.',
+                'success'
+              )
+            } else if (
+              /* Read more about handling dismissals below */
+              result.dismiss === Swal.DismissReason.cancel
+            ) {
+              swalWithBootstrapButtons.fire(
+                'Cancelled',
+                'Your imaginary data is safe :)',
+                'error'
+              )
+            }
+          })
       }
+
+      const startIndex = page * rowsPerPage;
+      const endIndex = startIndex + rowsPerPage;
+      const paginatedData = employee.slice(startIndex, endIndex);
 
   return (
     <div>
-       <div style={{ marginBottom: '2rem'}}>
+       <Box sx={{ margin: '1rem'}}>
             <Link to={'/add'}>
-            <Button name={'Add Contact'}/>
+              <Button  variant="contained" color="primary">
+                <span style={{display: 'flex', alignItems: 'center', marginRight: '4px'}}><PersonAddIcon/></span>
+                 Add Contact</Button>
             </Link>
-        </div>
+        </Box>
             <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <Table sx={{ "& tbody tr:hover": { backgroundColor: '#e0e0e0', minWidth: 200 } }} aria-label="simple table">
             <TableHead>
                 <TableRow>
                 <StyledTableCell>ID</StyledTableCell>
@@ -75,9 +137,9 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
             </TableHead>
             <TableBody>
                 {
-                employee && employee.length > 0 
+                paginatedData && paginatedData.length > 0 
                 ?
-                employee.map((item) => (
+                paginatedData.map((item) => (
                 <StyledTableRow 
                     key={item.name}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -87,11 +149,19 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
                     <StyledTableCell>{item.email}</StyledTableCell>
                     <StyledTableCell>{item.contactNumber}</StyledTableCell>
                     <StyledTableCell>
-                        <RemoveRedEyeIcon onClick={() => alert('View')} style={{ color: '#288BA8' }}/>
+                      <Link to={'/view'}>
+                      <Tooltip title="View" TransitionComponent={Fade} TransitionProps={{ timeout: 400 }} placement="top-start">
+                        <RemoveRedEyeIcon onClick={() => handleView(item.id, item.name, item.email, item.contactNumber)} style={{ color: '#808080' }}/>
+                      </Tooltip>
+                      </Link>
                         <Link to={'/edit'}>
-                        <ModeEditOutlineIcon onClick={() => handleEdit(item.id, item.name, item.email, item.contactNumber)}/>
+                        <Tooltip title="Edit" TransitionComponent={Fade} TransitionProps={{ timeout: 400 }} placement="top-start">
+                        <ModeEditOutlineIcon  style={{ color: '#288BA8' }} onClick={() => handleEdit(item.id, item.name, item.email, item.contactNumber)}/>
+                        </Tooltip>
                         </Link>
+                        <Tooltip title="Delete" TransitionComponent={Fade} TransitionProps={{ timeout: 400 }} placement="top-start">
                         <DeleteIcon onClick={() => handleDelete(item.id)} style={{ color: '#E83845' }}/>
+                        </Tooltip>
                     </StyledTableCell>
                 </StyledTableRow>
                 ))
@@ -106,7 +176,19 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
             </TableBody>
             </Table>
         </TableContainer>
-       
+        <Box sx={{display:'flex', justifyContent:'center', marginTop: '0.5rem'}}>
+          {/* //<Stack spacing={2}> */}
+              <TablePagination
+               count={employee.length}
+               color="primary"
+               page={page}
+               onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              rowsPerPageOptions={[5, 10, 25]} // Customize the available options
+              labelRowsPerPage="Rows per page"
+               />
+          {/* //</Stack> */}
+        </Box>
         </div>
     )
 }
