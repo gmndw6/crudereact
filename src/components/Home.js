@@ -17,9 +17,11 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { Box, TablePagination, Tooltip } from '@mui/material';
 import Fade from '@mui/material/Fade';
 import Swal from 'sweetalert2'
-import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import SearchIcon from '@mui/icons-material/Search';
+import InputAdornment from '@mui/material/InputAdornment';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -45,8 +47,11 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
       const [employee, setEmployee] = useState(Employees)
       const [page, setPage] = useState(0);
       const [rowsPerPage, setRowsPerPage] = useState(5);
+      const [searchQuery, setSearchQuery] = useState('');
       const history = useNavigate();
-      
+      const handleSearch = (event, value) => {
+        setSearchQuery(value);
+      };
       const handleChangePage = (event, newPage) => {
         setPage(newPage);
       };
@@ -76,8 +81,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
          
           const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
-              confirmButton: 'primary',
-              cancelButton: 'secondary'
+              confirmButton: 'success',
+              cancelButton: 'error'
             },
             buttonsStyling: true
           })
@@ -110,22 +115,54 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
             }
           })
       }
-
+      const filteredData = employee.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
       const startIndex = page * rowsPerPage;
       const endIndex = startIndex + rowsPerPage;
-      const paginatedData = employee.slice(startIndex, endIndex);
+      const paginatedData = filteredData.slice(startIndex, endIndex);
 
   return (
-    <div>
-       <Box sx={{ margin: '1rem'}}>
-            <Link to={'/add'}>
-              <Button  variant="contained" color="primary">
-                <span style={{display: 'flex', alignItems: 'center', marginRight: '4px'}}><PersonAddIcon/></span>
-                 Add Contact</Button>
-            </Link>
+    <>
+       <Box sx={{ margin: '1rem', display: 'flex', justifyContent: 'space-between'}}>
+          <Box>
+              <Link to={'/add'}>
+                <Button  variant="contained" color="primary">
+                  <span style={{display: 'flex', alignItems: 'center', marginRight: '4px'}}><PersonAddIcon/></span>
+                  Add Contact</Button>
+              </Link>
+          </Box>
+          <Box >   
+              <Stack spacing={2} sx={{ width: 200 , height: 50 }}>
+                  <Autocomplete
+                    freeSolo
+                    id="free-solo-2-demo"
+                    disableClearable
+                    options={employee.map((option) => option.name)}
+                    value={searchQuery}
+                    onInputChange={handleSearch}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder='Search input'
+                        sx={{height: '50px'}}
+                        InputProps={{
+                          ...params.InputProps,
+                          type: 'search', 
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <SearchIcon />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    )}
+                  />
+            </Stack>
+            </Box>
         </Box>
             <TableContainer component={Paper}>
-            <Table sx={{ "& tbody tr:hover": { backgroundColor: '#e0e0e0', minWidth: 200 } }} aria-label="simple table">
+            <Table sx={{ "& tbody tr:hover": { backgroundColor: '#000', color: '#000', minWidth: 200 } }} aria-label="simple table">
             <TableHead>
                 <TableRow>
                 <StyledTableCell>ID</StyledTableCell>
@@ -151,12 +188,12 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
                     <StyledTableCell>
                       <Link to={'/view'}>
                       <Tooltip title="View" TransitionComponent={Fade} TransitionProps={{ timeout: 400 }} placement="top-start">
-                        <RemoveRedEyeIcon onClick={() => handleView(item.id, item.name, item.email, item.contactNumber)} style={{ color: '#808080' }}/>
+                        <RemoveRedEyeIcon onClick={() => handleView(item.id, item.name, item.email, item.contactNumber)} style={{ color: '#288BA8' }}/>
                       </Tooltip>
                       </Link>
                         <Link to={'/edit'}>
                         <Tooltip title="Edit" TransitionComponent={Fade} TransitionProps={{ timeout: 400 }} placement="top-start">
-                        <ModeEditOutlineIcon  style={{ color: '#288BA8' }} onClick={() => handleEdit(item.id, item.name, item.email, item.contactNumber)}/>
+                        <ModeEditOutlineIcon  style={{ color: '#27A567' }} onClick={() => handleEdit(item.id, item.name, item.email, item.contactNumber)}/>
                         </Tooltip>
                         </Link>
                         <Tooltip title="Delete" TransitionComponent={Fade} TransitionProps={{ timeout: 400 }} placement="top-start">
@@ -176,7 +213,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
             </TableBody>
             </Table>
         </TableContainer>
-        <Box sx={{display:'flex', justifyContent:'center', marginTop: '0.5rem'}}>
+        <div>
+        <Box sx={{display:'flex', justifyContent:'flex-end', marginTop: '0.5rem', marginRight: '1rem'}}>
           {/* //<Stack spacing={2}> */}
               <TablePagination
                count={employee.length}
@@ -190,6 +228,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
           {/* //</Stack> */}
         </Box>
         </div>
+        </>
     )
 }
 

@@ -85,17 +85,16 @@ const Add = () => {
         />
         </div>
         <div style={{display: 'flex', marginTop: '2rem'}}>
-        <Button type="submit" variant="contained" color="primary">
-          Add
+        <Button type="submit" variant="contained" color="success">
+          Save
         </Button>
+        <Link to='/'>
+            <Button style={{marginLeft:'0.5rem'}}  variant="contained" color="error">
+                Back
+            </Button>
+        </Link>
         </div>
-        <div style={{display: 'flex', marginTop: '1rem'}}>
-            <Link to='/'>
-                <Button variant="contained" color="primary">
-                   Back
-                </Button>
-            </Link>
-        </div>
+        
       </form>
     </FormContainer>
   );

@@ -52,7 +52,7 @@ const View   = () => {
         </div>
         <div style={{display: 'flex', marginTop: '2rem'}}>
             <Link to='/'>
-                <Button variant="contained" color="primary">
+                <Button variant="contained" color="error">
                    Back
                 </Button>
             </Link>

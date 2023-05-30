@@ -52,7 +52,14 @@ const Edit   = () => {
     <FormContainer>
       <Box sx={{margin: '1rem', fontSize: '2rem'}}>Edit Contact</Box>
       <form onSubmit={handleEdit}>
-        <div>
+      <div>
+          <TextField
+            label="Id"
+            value={id}
+            inputProps={{ readOnly: true }}
+          />
+        </div>
+        <div style={{marginTop: '2rem'}}>
         <TextField
           label="Name"
           value={name}
@@ -77,16 +84,14 @@ const Edit   = () => {
             />
         </div>
         <div style={{display: 'flex', marginTop: '2rem'}}>
-        <Button type="submit" variant="contained" color="primary">
-          Update
-        </Button>
-        </div>
-        <div style={{ marginTop: '1rem'}}>
-            <Link to='/'>
-                <Button variant="contained" color="primary">
-                   Back
-                </Button>
-            </Link>
+          <Button type="submit" variant="contained" color="success">
+            Save
+          </Button>
+          <Link to='/'>
+              <Button style={{marginLeft:'0.5rem'}} variant="contained" color="error">
+                  Back
+              </Button>
+              </Link>
         </div>
       </form>
     </FormContainer>
